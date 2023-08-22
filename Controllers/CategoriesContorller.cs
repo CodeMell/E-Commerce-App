@@ -20,11 +20,22 @@ namespace Commy.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IEnumerable<Category>> GetCateagories(string name, string description)
+        [HttpGet]
+        public async Task<IEnumerable<Category>> GetCateagories()
         { 
-            Category category = null;
+            var categories = _context.Categories.ToList();
+            return categories;
         }
-        
+
+        [HttpPost]
+        public async Task<ActionResult> CreateCateagories(string name, string description) 
+        {
+            Category category = new Category(name, description);
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+            return Ok(category);
+        }
+
+
     }
 }
