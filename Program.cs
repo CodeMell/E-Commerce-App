@@ -1,8 +1,13 @@
+using Commy;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+string connectionSting = builder.Configuration.GetConnectionString("Defaul");
+builder.Services.AddDbContext<CommyDBContext>(options => options.UseSqlServer());
 
 var app = builder.Build();
 
