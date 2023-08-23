@@ -10,18 +10,20 @@ using Commy.Models;
 
 namespace Commy.Controllers
 {
-    public class CategoriesContorller : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class CategoriesController : ControllerBase
     {
         private readonly CommyDBContext _context;
 
-        public CategoriesContorller(CommyDBContext context)
+        public CategoriesController(CommyDBContext context)
         {
             _context = context;
         }
 
 
         [HttpGet]
-        public async Task<IEnumerable<Category>> GetCateagories()
+        public async Task<IEnumerable<Category>> Get()
         { 
             var categories = _context.Categories.ToList();
             return categories;
@@ -36,6 +38,17 @@ namespace Commy.Controllers
             return Ok(category);
         }
 
+        /*[HttpPut]
+        public async Task<AcceptedResult> UpdateCategories()
+        {
+
+        }
+
+        [HttpDelete]
+        public async Task<AcceptedResult> DeleteCategories()
+        {
+
+        }*/
 
     }
 }

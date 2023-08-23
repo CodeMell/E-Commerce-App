@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 string connectionSting = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContext<CommyDBContext>(options => options.UseSqlServer());
+builder.Services.AddDbContext<CommyDBContext>(options => options.UseSqlServer(connectionSting));
 
 var app = builder.Build();
 
