@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Commy.Migrations
 {
     [DbContext(typeof(CommyDBContext))]
-    [Migration("20230822164048_ini2")]
-    partial class ini2
+    [Migration("20230824162957_m1")]
+    partial class m1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
