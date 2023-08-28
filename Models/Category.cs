@@ -8,7 +8,7 @@ namespace Commy.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-
+        public List<Products> Products { get; set; }
         public Category(string name, string description) 
         { 
             Name = name;
