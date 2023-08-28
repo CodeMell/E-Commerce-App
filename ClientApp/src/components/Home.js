@@ -1,22 +1,31 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 
-export class Home extends Component {
-  static displayName = Home.name;
+export function Home() {
+    const [categories, setCategories] = useState([]);
 
-  render() {
+    useEffect(() => {
+        axios.get("https://localhost:7263/Categories").then(function (res)
+        {
+                console.log(res.data)
+                const CategoriesArray = [];
+
+                res.data.forEach((category) => {
+                    CategoriesArray.push(
+                        <button key={category.id}>{category.name}</button>
+                    );
+                });
+
+                setCategories(CategoriesArray);
+                console.log(CategoriesArray);
+            })
+    }, []);
+
     return (
-        <div class="grid text-center">
-            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <a class="btn btn-primary" role="button" aria-disabled="true">Grocerics</a>
-                <a class="btn btn-primary" role="button" aria-disabled="true">Eletronics</a>
-                <a class="btn btn-primary" role="button" aria-disabled="true">Home Appliance</a>
-            </div>
-            <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
-                <a class="btn btn-primary" role="button" aria-disabled="true">Clothes</a>
-                <a class="btn btn-primary" role="button" aria-disabled="true">Jewlery</a>
-                <a class="btn btn-primary" role="button" aria-disabled="true">Instrument</a>
-            </div>
-      </div>
+        <div>
+            <h1>The Sells Store</h1>
+            {categories}
+        </div>
     );
-  }
+
 }
