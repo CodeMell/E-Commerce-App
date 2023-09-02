@@ -26,15 +26,15 @@ namespace Commy.Controllers
         public async Task<IEnumerable<Category>> Get()
         {
             // Retrieve a list of all categories from the database and return them
-            var categories = _context.Categories.ToList();
-            return categories;
+            var categories = _context.Categories.Include(thing =>thing.Products).ToList();
+            return categories.ToArray();
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateCateagories(string name, string description)
+        public async Task<ActionResult> CreateCateagories([FromBody]Category category)
         {
             // Create a new category object with the provided name and description
-            Category category = new Category(name, description);
+            /*Category category = new Category(name, description);*/
 
             // Add the new category to the database
             _context.Categories.Add(category);
