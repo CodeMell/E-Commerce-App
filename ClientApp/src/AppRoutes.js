@@ -17,7 +17,7 @@ const AppRoutes = [
     element: <FetchData />
   },
   {
-    path: "/category/:categoryId", // Define a route parameter for the category ID
+    path: "/category/:categoryId/:categoryName", // Include the category name as a parameter
     element: <ProductPage />,
   }
 ];

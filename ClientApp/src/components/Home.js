@@ -14,17 +14,15 @@ export function Home() {
   const [editCategoryId, setEditCategoryId] = useState(null);
 
   useEffect(() => {
-    axios.get('https://localhost:7263/Categories').then(function (res) {
+    axios.get("https://localhost:7263/Categories").then(function (res) {
       const CategoriesArray = res.data.map((category) => (
         <div key={category.id} className="category-item">
-          <button
-            className="btn btn-primary"
-            onClick={() => handleButtonClick(category.name, category.id)}
+          <Link
+          className="btn btn-primary"
+            to={`/category/${category.id}/${encodeURIComponent(category.name)}`}
           >
             {category.name}
-          </button>
-          <Link to={`/category/${category.id}`}>Category Name</Link>
-
+          </Link>
           <button
             className="btn btn-danger"
             onClick={() => handleDelete(category.id)}
@@ -169,7 +167,6 @@ export function Home() {
   return (
     <div>
       <h1>The Sells Store</h1>
-      <h2>Clicked Button: {clickedButton}</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="newCategory">New Category:</label>
