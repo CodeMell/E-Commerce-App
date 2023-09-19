@@ -30,6 +30,17 @@ namespace Commy.Controllers
             return categories.ToArray();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Category>> Get(int id) 
+        {
+            var category = await _context.Categories.Include(thing => thing.Products).FirstOrDefaultAsync(thing => thing.Id == id);
+            if (category == null)
+            {  
+                return NotFound();
+            }
+            return category;
+        }
+
         [HttpPost]
         public async Task<ActionResult> CreateCateagories([FromBody]Category category)
         {

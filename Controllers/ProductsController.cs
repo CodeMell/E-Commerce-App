@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Commy;
 using Commy.Models;
 
 namespace Commy.Controllers
 {
-    public class ProductsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductsController : ControllerBase
     {
         private readonly CommyDBContext _context;
 
@@ -19,145 +21,104 @@ namespace Commy.Controllers
             _context = context;
         }
 
-        // GET: Products
-        public async Task<IActionResult> Index()
+        // GET: api/Products
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
         {
-              return _context.Products != null ? 
-                          View(await _context.Products.ToListAsync()) :
-                          Problem("Entity set 'CommyDBContext.Products'  is null.");
+          if (_context.Products == null)
+          {
+              return NotFound();
+          }
+            return await _context.Products.ToListAsync();
         }
 
-        // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Products/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Products>> GetProducts(int id)
         {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
-
-            var products = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (products == null)
-            {
-                return NotFound();
-            }
-
-            return View(products);
-        }
-
-        // GET: Products/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,CategoryID")] Products products)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(products);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(products);
-        }
-
-        // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.Products == null)
+          {
+              return NotFound();
+          }
             var products = await _context.Products.FindAsync(id);
+
             if (products == null)
             {
                 return NotFound();
             }
-            return View(products);
+
+            return products;
         }
 
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,CategoryID")] Products products)
+        // PUT: api/Products/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProducts(int id, Products products)
         {
             if (id != products.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(products).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(products);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductsExists(products.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(products);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Products
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Products>> PostProducts(Products products)
         {
-            if (id == null || _context.Products == null)
+          if (_context.Products == null)
+          {
+              return Problem("Entity set 'CommyDBContext.Products'  is null.");
+          }
+            _context.Products.Add(products);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetProducts", new { id = products.Id }, products);
+        }
+
+        // DELETE: api/Products/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProducts(int id)
+        {
+            if (_context.Products == null)
             {
                 return NotFound();
             }
-
-            var products = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var products = await _context.Products.FindAsync(id);
             if (products == null)
             {
                 return NotFound();
             }
 
-            return View(products);
-        }
-
-        // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Products == null)
-            {
-                return Problem("Entity set 'CommyDBContext.Products'  is null.");
-            }
-            var products = await _context.Products.FindAsync(id);
-            if (products != null)
-            {
-                _context.Products.Remove(products);
-            }
-            
+            _context.Products.Remove(products);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool ProductsExists(int id)
         {
-          return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

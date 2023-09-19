@@ -14,8 +14,9 @@ export function ProductPage() {
 
   useEffect(() => {
     // Fetch products based on the categoryId
-    axios.get(`https://localhost:7263/Products/${categoryId}`).then(function (res) {
-      setProducts(res.data);
+    console.log(categoryId);
+    axios.get(`https://localhost:7263/Categories/${categoryId}`).then(function (res) {
+      setProducts(res.data.products);
     });
   }, [categoryId]);
 
@@ -28,7 +29,7 @@ export function ProductPage() {
     e.preventDefault();
     
     try {
-      const response = await axios.post('https://localhost:7263/Products', {
+      const response = await axios.post('https://localhost:7263/api/Products', {
         categoryId: categoryId, // Include the category ID in the request
         name: newProduct.name,
         description: newProduct.description,
@@ -52,7 +53,7 @@ export function ProductPage() {
 
   const handleDelete = async (productId) => {
     try {
-      await axios.delete(`https://localhost:7263/Products/${productId}`);
+      await axios.delete(`https://localhost:7263/api/Products/${productId}`);
 
       // Update the products state to remove the deleted product.
       const updatedProducts = products.filter((product) => product.id !== productId);

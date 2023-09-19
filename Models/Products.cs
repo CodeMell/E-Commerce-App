@@ -17,7 +17,7 @@ namespace Commy.Models
             Name = name;
             Description = description;
             Price = price;
-            Id = categoryID;
+            CategoryID = categoryID;
         }
     }
 }
